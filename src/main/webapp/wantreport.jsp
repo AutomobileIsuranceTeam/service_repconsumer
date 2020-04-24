@@ -125,85 +125,115 @@
 							<div class="layui-tab">
 								<ul class="layui-tab-title">
 									<li class="layui-this">报案信息填写</li>
+									<li>案件审核</li>
 									<li>事故照片上传</li>
+									<li>案件信息</li>
 								</ul>
 								<!-- 报案信息 -->
 								<div class="layui-tab-content">
-									<div class="layui-tab-item layui-show">
-										<form action="" method="post">
+									<div class="layui-tab-item layui-show" id="baoanxinxi">
+										<form action="#" id="myrepinfo" method="post" onsubmit="return false">
 											<div class="form-group">
 												<label class="label-control">身份证号:</label> <input
-													type="text" name="idcard" />
+													type="text" name="idcard" id="idcard"/>
 											</div>
 											<div class="form-group">
 												<label class="label-control">报案人电话:</label> <input
-													type="text" name="userphone" />
+													type="text" name="userphone" id="userphone" />
 											</div>
 											<div class="form-group">
 												<label class="label-control">事故发生地:</label> <input
-													type="text" name="address" />
+													type="text" name="address" id="address"/>
 											</div>
 											<div class="form-group">
-												<label class="label-control">事故发生时间:</label> <input
-													type="text" name="report_time" />
+												<label class="label-control" >事故发生时间:</label> <input
+												type="text" name="report_time" id="accidenttime"  />
 											</div>
 											<div class="form-group">
 												<label class="label-control">是否与人碰撞:</label> <select
-													name="If_Collision">
-													<option selected="selected">是</option>
-													<option>否</option>
+													name="if_collision" id="if_collision">
+													<option value="" selected="selected">请选择</option>
+													<option value="是" >是</option>
+													<option value="否">否</option>
 												</select>
 											</div>
 											<div class="form-group">
-												<button type="submit" class="layui-btn" id="test1">提交</button>
+												<label class="label-control">是否有人受伤：</label> <select
+													name="if_injured" id="if_injured">
+													<option value="" selected="selected">请选择</option>
+													<option value="是" >是</option>
+													<option value="否">否</option>
+												</select>
+											</div>
+											<div class="form-group" id="endlow">
+												<button type="button"  class="layui-btn" id="test1" onclick="addrepinfo()">提交</button>
 											</div>
 										</form>
 									</div>
+									<!-- 报案信息 -->
+									<div class="layui-tab-item" id="accidentpicid">
+									用户提交保单照片，查勘员进行审核
+									</div>
+									
 									<!-- 事故照片上传 -->
 
-									<div class="layui-tab-item">
-										<div class="form-group">
+									<div class="layui-tab-item" id="accidentpicid">
+										<div class="form-group" id="report">
 											<label class="label-control">当前报案号：</label> <input
-												type="text" id="reportid" name="reportid"
-												readonly="readonly">
+												type="text"  id="reportid" name="reportid" >
 										</div>
-
+										<!-- 多张图片上传 -->
 										<div class="layui-upload">
-											<button type="button" class="layui-btn" id="uppic1">上传车头图片</button>
-											<div class="layui-upload-list">
-												<img class="layui-upload-img" id="demo1"
-													style="height: 100px; width: 100px;">
-												<p id="demoText"></p>
+											  <button type="button" class="layui-btn layui-btn-normal" id="testList">选择多文件</button> 
+											  <div class="layui-upload-list">
+											    <table class="layui-table">
+											      <thead>
+											        <tr><th>文件名</th>
+											        <th>大小</th>
+											        <th>状态</th>
+											        <th>操作</th>
+											      </tr></thead>
+											      <tbody id="demoList"></tbody>
+											    </table>
+											  </div>
+											  <button type="button" class="layui-btn" id="testListAction">开始上传</button>
+										</div> 
+										<!-- 多张图片上传 -->
+									</div>
+									<!-- 事故照片上传 -->
+									<!-- 案件信息查看 -->
+									<div class="layui-tab-item">
+										<form action="#" id="showrepinfo" method="post" onsubmit="return false">
+											<div class="form-group">
+														<label class="label-control">请输入要查看的案件的报案号：</label> <input
+															type="text" name="reportid" id="reportid"/>
+														<input type="button" id="showthisrep" onclick="showrepinfo()" value="查询"/>
 											</div>
-											<button type="button" class="layui-btn" id="btn1">上传</button>
-										</div>
-										<div class="layui-upload">
-											<button type="button" class="layui-btn" id="uppic2">上传车尾图片</button>
-											<div class="layui-upload-list">
-												<img class="layui-upload-img" id="demo2"
-													style="height: 100px; width: 100px;">
-												<p id="demoText"></p>
+										</form>
+										<div class="form-group">
+												<label class="label-control">报案人电话:</label> <input
+													type="text" name="userphoneshow" id="userphoneshow" />
 											</div>
-											<button type="button" class="layui-btn" id="btn2">上传</button>
-										</div>
-										<div class="layui-upload">
-											<button type="button" class="layui-btn" id="uppic3">上传左侧车身图片</button>
-											<div class="layui-upload-list">
-												<img class="layui-upload-img" id="demo3"
-													style="height: 100px; width: 100px;">
-												<p id="demoText"></p>
+											<div class="form-group">
+												<label class="label-control">事故发生地:</label> <input
+													type="text" name="addressshow" id="addressshow"/>
 											</div>
-											<button type="button" class="layui-btn" id="btn3">上传</button>
-										</div>
-										<div class="layui-upload">
-											<button type="button" class="layui-btn" id="uppic4">上传右侧车身图片</button>
-											<div class="layui-upload-list">
-												<img class="layui-upload-img" id="demo4"
-													style="height: 100px; width: 100px;">
-												<p id="demoText"></p>
+											<div class="form-group">
+												<label class="label-control" >事故发生时间:</label> <input
+												type="text" name="report_timeshow" id="accidenttimeshow"  />
 											</div>
-											<button type="button" class="layui-btn" id="btn4">上传</button>
-										</div>
+											<div class="form-group">
+												<label class="label-control">是否与人碰撞:</label>
+												<input type="text" id="if_collisionshow"/>
+											</div>
+											<div class="form-group">
+												<label class="label-control">是否有人受伤：</label> <input
+													name="if_injuredshow" id="if_injuredshow"/>
+											</div>
+											<div class="form-group" id="imagediv">
+												
+											</div>
+											
 									</div>
 								</div>
 							</div>
@@ -279,188 +309,182 @@
 
 		});
 	</script>
-	<script>
-		layui.use([ 'upload', 'jquery' ],
-						function() {
-							var $ = layui.jquery, upload = layui.upload;
-							//普通图片上传
-							//车头图片上传
-							var uploadInst = upload
-									.render({
-										elem : '#uppic1',
-										url : 'uppiturecontrol/upcarhead' //改成您自己的上传接口
-										,
-										auto : false,
-										data:{remake:1},
-										accept : 'file',
-										exts : 'png|jpg|bmp',
-										bindAction : '#btn1',
-										choose : function(obj) {
-											obj
-													.preview(function(index,
-															file, result) {
-														$('#demo1').attr('src',
-																result); //图片链接（base64）
-													});
-										},
-										before : function(obj) {
-											//预读本地文件示例，不支持ie8
+	<!-- 报案信息提交js -->
+<script type="text/javascript">
+	function addrepinfo(){
+		$.ajax({
+			type: "POST",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "/reportcontrol/addrepinfo",//url
+            data: $('#myrepinfo').serialize(),//+"&page="+page,
+            success: function (data) {
+                console.log(data);//打印服务端返回的数据(调试用)
+                if(data.code>0){
+                	return layer.msg('提交失败');
+                }else{
+                	$('#idcars').val('');
+                	$('#userphone').val('');
+                	$('#address').val('');
+                	$('#accidenttime').val('');
+                	$('#if_collision').find("option").eq(0).prop("selected", true);
+                	$('#if_injured').find("option").eq(0).prop("selected", true);
+                	$('#endlow').append(
+                			"<br><label class='label-control'>报案号为：</label><input readonly='readonly' type='text' value='"+
+                			data.reportid
+                			+"'/>"
+                	);
+                	
+                	return layer.msg('报案成功');
+                	 }
+            },
+            error : function() {
+                alert("异常！");
+            }
+		});
+	}
 
-										},
-										done : function(res) {
-											//如果上传失败
-											if (res.code > 0) {
-												return layer.msg('上传失败');
-											} else {
-												return layer.msg('上传成功');
-											}
-											//上传成功
-										},
-										error : function() {
-											//演示失败状态，并实现重传
-											var demoText = $('#demoText');
-											demoText
-													.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
-											demoText.find('.demo-reload').on(
-													'click', function() {
-														uploadInst.upload();
-													});
-										}
-									});
-							//车尾图片上传
-							upload
-									.render({
-										elem : '#uppic2',
-										url : 'uppiturecontrol/upcarhead' //改成您自己的上传接口
-										,
-										data:{remake:2},
-										auto : false,
-										accept : 'file',
-										exts : 'png|jpg|bmp',
-										bindAction : '#btn2',
-										choose : function(obj) {
-											obj
-													.preview(function(index,
-															file, result) {
-														$('#demo2').attr('src',
-																result); //图片链接（base64）
-													});
-										},
-										before : function(obj) {
-											//预读本地文件示例，不支持ie8
+</script>
+<!-- layui日期控件js -->
+<script>
+layui.use('laydate', function(){
+  var laydate = layui.laydate;
+  
+  //常规用法
+  laydate.render({
+    elem: '#accidenttime'
+  });
+});
+  </script>
+<script>
+//多图片上传
+layui.use('upload', function(){
+  var $ = layui.jquery
+  ,upload = layui.upload;
+  var demoListView = $('#demoList')
+  ,uploadListIns = upload.render({
+    elem: '#testList'
+    ,url: '/uppiturecontrol/upcarhead' //改成您自己的上传接口
+    ,accept: 'file'
+    ,multiple: true
+    ,auto: false
+    ,bindAction: '#testListAction'
+    ,before: function(obj) {
+        this.data={'reportid':$('#reportid').val()};//关键代码
+     }
+    ,choose: function(obj){   
+      var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+      //读取本地文件
+      obj.preview(function(index, file, result){
+        var tr = $(['<tr id="upload-'+ index +'">'
+          ,'<td>'+ file.name +'</td>'
+          ,'<td>'+ (file.size/1024).toFixed(1) +'kb</td>'
+          ,'<td>等待上传</td>'
+          ,'<td>'
+            ,'<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+            ,'<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+          ,'</td>'
+        ,'</tr>'].join(''));
+        
+        //单个重传
+        tr.find('.demo-reload').on('click', function(){
+          obj.upload(index, file);
+        });
+        
+        //删除
+        tr.find('.demo-delete').on('click', function(){
+          delete files[index]; //删除对应的文件
+          tr.remove();
+          uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+        });
+        
+        demoListView.append(tr);
+    	  
+      });
+    }
+    ,done: function(res, index, upload){
+      if(res.code==200){ //上传成功
+	        var tr = demoListView.find('tr#upload-'+ index)
+	        ,tds = tr.children();
+	        tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+	        tds.eq(3).html(''); //清空操作
+	        return delete this.files[index]; //删除文件队列已经上传成功的文件
+      }else if(res.code==100){
+    	  layer.msg('上传图片不能超过4张');
+      }
+      this.error(index, upload);
+    }
+    ,error: function(index, upload){
+      var tr = demoListView.find('tr#upload-'+ index)
+      ,tds = tr.children();
+      tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+      tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
+    }
+    
+  });
+});
 
-										},
-										done : function(res) {
-											//如果上传失败
-											if (res.code > 0) {
-												return layer.msg('上传失败');
-											} else {
-												return layer.msg('上传成功');
-											}
-											//上传成功
-										},
-										error : function() {
-											//演示失败状态，并实现重传
-											var demoText = $('#demoText');
-											demoText
-													.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
-											demoText.find('.demo-reload').on(
-													'click', function() {
-														uploadInst.upload();
-													});
-										}
-									});
-							//左侧车身图片上传
-							upload
-									.render({
-										elem : '#uppic3',
-										url : 'uppiturecontrol/upcarhead' //改成您自己的上传接口
-										,
-										data:{remake:3},
-										auto : false,
-										accept : 'file',
-										exts : 'png|jpg|bmp',
-										bindAction : '#btn3',
-										choose : function(obj) {
-											obj
-													.preview(function(index,
-															file, result) {
-														$('#demo3').attr('src',
-																result); //图片链接（base64）
-													});
-										},
-										before : function(obj) {
-											//预读本地文件示例，不支持ie8
+  </script>
+  <!-- 显示案件信息js -->
+  <script type="text/javascript">
+	function showrepinfo(){
+		$.ajax({
+			type: "POST",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "/reportcontrol/showrepinfo",//url
+            data: $('#showrepinfo').serialize(),//+"&page="+page,
+            success: function (data) {
+                console.log(data);//打印服务端返回的数据(调试用)
+                if(data.code>=400){
+                	return layer.msg('无该案件，请输入正确的报案号！');
+                }else if(data.code<=200){
+                	$('#userphoneshow').val(data.repthis.userphone);
+                	$('#addressshow').val(data.repthis.address);
+                	$('#accidenttimeshow').val(data.repthis.accident_time);
+                	$('#if_collisionshow').val(data.repthis.if_collision);
+                	$('#if_injuredshow').val(data.repthis.if_injured);
+                	console.log(data.carpic);
+                	$.each(data.carpic,function (index,item){
+                		$('#imagediv').append(
+                				"<label class='label-control'>车辆损失图片：</label><img src='"+
+                				item.carone
+                				+"' alt='111' width='200px' height='200px' id='myimage"+index+"' class='layui-upload-img' onclick='mypreviewImg(this)'><br>"
+                		);
+                	});
+                 }
+            },
+            error : function() {
+                alert("异常！");
+            }
+		});
+	}
 
-										},
-										done : function(res) {
-											//如果上传失败
-											if (res.code > 0) {
-												return layer.msg('上传失败');
-											} else {
-												return layer.msg('上传成功');
-											}
-											//上传成功
-										},
-										error : function() {
-											//演示失败状态，并实现重传
-											var demoText = $('#demoText');
-											demoText
-													.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
-											demoText.find('.demo-reload').on(
-													'click', function() {
-														uploadInst.upload();
-													});
-										}
-									});
-							//右侧车身图片上传
-							upload
-									.render({
-										elem : '#uppic4',
-										url : 'uppiturecontrol/upcarhead' //改成您自己的上传接口
-										,
-										data:{remake:4},
-										auto : false,
-										accept : 'file',
-										exts : 'png|jpg|bmp',
-										bindAction : '#btn4',
-										choose : function(obj) {
-											obj
-													.preview(function(index,
-															file, result) {
-														$('#demo4').attr('src',
-																result); //图片链接（base64）
-													});
-										},
-										before : function(obj) {
-											//预读本地文件示例，不支持ie8
+</script>
+<!-- 图片预览 -->
+<script type="text/javascript">
+function mypreviewImg(obj) {
+	console.log(obj);
+    var img = new Image();  
+    img.src = obj.src;
+    var height = img.height + 50; //获取图片高度
+    var width = img.width; //获取图片宽度
+    var imgHtml = "<img src='" + obj.src + "' />";  
+    //弹出层
+    layer.open({  
+        type: 1,  
+        shade: 0.8,
+        offset: 'auto',
+        area: [width + 'px',height+'px'],
+        shadeClose:true,//点击外围关闭弹窗
+        scrollbar: false,//不现实滚动条
+        title:'图片预览',//不显示标题  
+        content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响  
+        cancel: function () {  
+            //layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', { time: 5000, icon: 6 });  
+        }  
+    }); 
+}
 
-										},
-										done : function(res) {
-											//如果上传失败
-											if (res.code > 0) {
-												return layer.msg('上传失败');
-											} else {
-												return layer.msg('上传成功');
-											}
-											//上传成功
-										},
-										error : function() {
-											//演示失败状态，并实现重传
-											var demoText = $('#demoText');
-											demoText
-													.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
-											demoText.find('.demo-reload').on(
-													'click', function() {
-														uploadInst.upload();
-													});
-										}
-									});
-
-						});
-	</script>
-
-
+</script>
 
 </body>
 

@@ -82,13 +82,13 @@
                         <a href="gotopage/toreport" class="waves-effect"><i class="glyphicon glyphicon-fire fa-fw"></i>我要报案</a>
                     </li>
                     <li>
-                        <a href="profile.html" class="waves-effect"><i class="ti-user fa-fw"></i>发起闪赔</a>
+                        <a href="gotopage/toflash" class="waves-effect"><i class="ti-user fa-fw"></i>发起闪赔</a>
                     </li>
                     <li>
-                        <a href="basic-table.html" class="waves-effect"><i class="ti-layout fa-fw"></i>提交定损</a>
+                        <a href="gotopage/touploss" class="waves-effect"><i class="ti-layout fa-fw"></i>提交定损</a>
                     </li>
                     <li>
-                        <a href="themifyicon.html" class="waves-effect"><i class="ti-face-smile fa-fw"></i>进度处理</a>
+                        <a href="gotopage/todealtime" class="waves-effect"><i class="ti-face-smile fa-fw"></i>进度处理</a>
                     </li>
                 </ul>
                 

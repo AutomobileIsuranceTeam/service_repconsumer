@@ -27,6 +27,9 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
+<link rel="stylesheet" href="layui/css/layui.css" media="all">
+<script src="layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript" src="js/jquery.min.js"></script>
 </head>
 
 <body>
@@ -103,7 +106,52 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="white-box">
-                            <h3>Blank Page</h3>
+                            <!-- 提交定损模块 -->
+                            <div class="layui-tab">
+							  <ul class="layui-tab-title">
+							    <li class="layui-this">获取报案号</li>
+							    <li>提交定损中心</li>
+							    
+							  </ul>
+							  <div class="layui-tab-content">
+							    <div class="layui-tab-item layui-show">
+							     		<form action="">
+								    		<div class="form-group">
+										    <label class="label-control">请输入报案人电话：</label>
+										    	<input type="text" name="userphone"/>
+										   	</div>
+								      		<input type="button" value="查询" />
+								      	</form>
+							    </div>
+							    <div class="layui-tab-item">
+							    		<div class="form-group">
+										    <label class="label-control">请输入报案号：</label>
+										    	<input type="text" id="reportid"/>
+										 </div>
+										<div class="layui-upload">
+											<button type="button" class="layui-btn" id="uppic1">车辆维修单据</button>
+											<div class="layui-upload-list">
+												<img class="layui-upload-img" id="demo1"
+													style="height: 100px; width: 100px;">
+												<p id="demoText"></p>
+											</div>
+											<button type="button" class="layui-btn" id="btn1">上传</button><br>
+											
+											<button type="button" class="layui-btn" id="uppic2">人伤医疗单据</button>
+											<div class="layui-upload-list">
+												<img class="layui-upload-img" id="demo2"
+													style="height: 100px; width: 100px;">
+												<p id="demoText"></p>
+											</div>
+											<button type="button" class="layui-btn" id="btn2">上传</button><br>
+										</div>
+									
+									
+									
+									
+								</div>
+							  </div>
+							</div>
                         </div>
                     </div>
                 </div>
@@ -128,6 +176,142 @@
     <script src="js/waves.js"></script>
     <!-- Custom Theme JavaScript -->
     <script src="js/myadmin.js"></script>
+    <script>
+		layui.use('element', function() {
+			var $ = layui.jquery, element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+
+			//触发事件
+			var active = {
+				tabAdd : function() {
+					//新增一个Tab项
+					element.tabAdd('demo', {
+						title : '新选项' + (Math.random() * 1000 | 0) //用于演示
+						,
+						content : '内容' + (Math.random() * 1000 | 0),
+						id : new Date().getTime()
+					//实际使用一般是规定好的id，这里以时间戳模拟下
+					})
+				},
+				tabDelete : function(othis) {
+					//删除指定Tab项
+					element.tabDelete('demo', '44'); //删除：“商品管理”
+
+					othis.addClass('layui-btn-disabled');
+				},
+				tabChange : function() {
+					//切换到指定Tab项
+					element.tabChange('demo', '22'); //切换到：用户管理
+				}
+			};
+
+			$('.site-demo-active').on('click', function() {
+				var othis = $(this), type = othis.data('type');
+				active[type] ? active[type].call(this, othis) : '';
+			});
+
+			//Hash地址的定位
+			var layid = location.hash.replace(/^#test=/, '');
+			element.tabChange('test', layid);
+
+			element.on('tab(test)', function(elem) {
+				location.hash = 'test=' + $(this).attr('lay-id');
+			});
+
+		});
+	</script>
+	
+	<script>
+		layui.use([ 'upload', 'jquery' ],
+						function() {
+							var $ = layui.jquery, upload = layui.upload;
+							//普通图片上传
+							//车头图片上传
+							var uploadInst = upload
+									.render({
+										elem : '#uppic1',
+										url : 'uppiturecontrol/upcarhead' //改成您自己的上传接口
+										,
+										auto : false,
+										data:{remake:1},
+										accept : 'file',
+										exts : 'png|jpg|bmp',
+										bindAction : '#btn1',
+										choose : function(obj) {
+											obj
+													.preview(function(index,
+															file, result) {
+														$('#demo1').attr('src',
+																result); //图片链接（base64）
+													});
+										},
+										before : function(obj) {
+											//预读本地文件示例，不支持ie8
+
+										},
+										done : function(res) {
+											//如果上传失败
+											if (res.code > 0) {
+												return layer.msg('上传失败');
+											} else {
+												return layer.msg('上传成功');
+											}
+											//上传成功
+										},
+										error : function() {
+											//演示失败状态，并实现重传
+											var demoText = $('#demoText');
+											demoText
+													.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+											demoText.find('.demo-reload').on(
+													'click', function() {
+														uploadInst.upload();
+													});
+										}
+									});
+							//车尾图片上传
+							upload
+									.render({
+										elem : '#uppic2',
+										url : 'uppiturecontrol/upcarhead' //改成您自己的上传接口
+										,
+										data:{remake:2},
+										auto : false,
+										accept : 'file',
+										exts : 'png|jpg|bmp',
+										bindAction : '#btn2',
+										choose : function(obj) {
+											obj
+													.preview(function(index,
+															file, result) {
+														$('#demo2').attr('src',
+																result); //图片链接（base64）
+													});
+										},
+										before : function(obj) {
+											//预读本地文件示例，不支持ie8
+
+										},
+										done : function(res) {
+											//如果上传失败
+											if (res.code > 0) {
+												return layer.msg('上传失败');
+											} else {
+												return layer.msg('上传成功');
+											}
+											//上传成功
+										},
+										error : function() {
+											//演示失败状态，并实现重传
+											var demoText = $('#demoText');
+											demoText
+													.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+											demoText.find('.demo-reload').on(
+													'click', function() {
+														uploadInst.upload();
+													});
+										}
+									});
+							</script>
 </body>
 
 </html>

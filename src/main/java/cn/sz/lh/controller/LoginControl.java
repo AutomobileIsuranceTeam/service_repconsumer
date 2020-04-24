@@ -1,11 +1,10 @@
 package cn.sz.lh.controller;
 
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,8 +23,11 @@ public class LoginControl {
 	
 	
 	@RequestMapping(value="/logincheck",method=RequestMethod.POST)
-	public String loginchecke(Manager manager,HttpServletRequest request) {
+	public String loginchecke(Manager manager,HttpServletRequest request,HttpServletResponse response) {
 		Manager nowmanager=loginService.Login(manager);
+		if(nowmanager==null) {
+				return "login";
+		}
 		System.out.println(manager.getD_name());
 		request.getSession().setAttribute("manager", nowmanager);
 		
