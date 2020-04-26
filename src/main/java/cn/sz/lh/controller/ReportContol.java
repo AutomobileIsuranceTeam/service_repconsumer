@@ -1,6 +1,7 @@
 package cn.sz.lh.controller;
 
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,7 +53,6 @@ public class ReportContol {
 	@ResponseBody
 	@RequestMapping(value="/showrepinfo",method=RequestMethod.POST)
 	public Object showonerepinfo(Rep_Info rep) {
-		
 		System.out.println("reportid:"+rep.getReportid());
 		Rep_Info repthis=reportfeign.showInforep(rep);
 		if(repthis==null) {
@@ -73,4 +73,20 @@ public class ReportContol {
 		map.put("code", 200);
 		return map;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value="/showByphonetorepid",method=RequestMethod.POST)
+	public Object showByPhoneTorepid(Rep_Info rep) {
+		System.out.println(123213);
+		Map<String,Object> map=new HashMap<>();
+		List<Rep_Info> replist=reportfeign.showByPhone(rep);
+		if(replist==null) {
+			map.put("code", 1);
+			 return map;
+		}
+		map.put("replist", replist);
+		map.put("code", 0);
+		return map;
+	}
+	
 }

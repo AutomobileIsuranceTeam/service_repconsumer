@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.sz.lh.pojo.Car_Accident;
+import cn.sz.lh.pojo.Flash_P;
 import cn.sz.lh.pojo.Insured;
 import cn.sz.lh.pojo.Manager;
 import cn.sz.lh.pojo.Rep_Info;
@@ -35,4 +36,13 @@ public interface LoginService {
 	
 	@PostMapping("/report/updatecarphoto")
 	public String updateaccidentid(@RequestBody Rep_Info rep);//修改accidentid，关联报案信息和车辆事故表
+	
+	@PostMapping("/report/showByPhone")
+	public List<Rep_Info> showByPhone(@RequestBody Rep_Info rep);//根据手机号查报案号
+	
+	@PostMapping("/flashcontrol/addflashinfo")
+	public String addflashinfo(Flash_P f);//添加闪赔表
+	
+	@PostMapping("/report/updaterepstatus")
+	public String updaterepstatus(Rep_Info rep);//修改案件状态
 }

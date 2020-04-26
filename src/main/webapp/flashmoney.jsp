@@ -4,6 +4,7 @@
 	String path = request.getContextPath();
 	String basepath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,6 +30,7 @@
 <![endif]-->
 <link rel="stylesheet" href="layui/css/layui.css" media="all">
 <script src="layui/layui.js" charset="utf-8"></script>
+<script src="date.format-master/date.format.js" charset="utf-8"></script>
 <script type="text/javascript" src="js/jquery.min.js"></script>
 </head>
 
@@ -114,26 +116,31 @@
 								  </ul>
 								  <div class="layui-tab-content">
 								    <div class="layui-tab-item layui-show">
-								    	<form action="">
+								    	<form action="#" id="byshowrepid" method="post" onsubmit="return false" >
+								    	
 								    		<div class="form-group">
 										    <label class="label-control">请输入报案人电话：</label>
 										    	<input type="text" name="userphone"/>
+										    	<input type="button" value="查询" onclick="showrepidbyphone()"/>
 										   	</div>
-								      		<input type="button" value="查询" />
 								      	</form>
+								      	<div class="form-group">
+								      		<table  id="wantedrepid" width="100%" border="1" cellspacing="0" cellpadding="0" >
+								      		</table>
+								      	</div>
 								    </div>
 								    <div class="layui-tab-item">
-								    	<form action="" method="post">
+								    	<form action="#" id="flashinfoform" method="post" onsubmit="return false">
 										    <div class="form-group">
 										    <label class="label-control">闪赔赔付报案号：</label>
-										    	<input type="text" name="reportid"/>
+										    	<input type="text" name="reportid" id="flashrepid"/>
 										   	</div>
 										    <div class="form-group">
 										    <label class="label-control">闪赔赔付车辆金额：</label>
-										 		<input type="text" name="flash_c_m"/><br>
+										 		<input type="text" name="flash_c_m" id="flashmoney"/><br>
 										 	</div>
 										 	<div class="form-group">
-										 		<input type="submit" value="提交财务"/><br>
+										 		<input type="button" onclick="uptomoney()" value="提交财务"/><br>
 										 	</div>
 									    </form>
 								    </div>
@@ -206,6 +213,76 @@
 
 		});
 	</script>
+	<script type="text/javascript">
+	function showrepidbyphone(){
+		$.ajax({
+			type: "POST",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "/reportcontrol/showByphonetorepid",//url
+            data: $('#byshowrepid').serialize(),//+"&page="+page,
+            success: function (data) {
+                console.log(data);//打印服务端返回的数据(调试用)
+                if(data.code>0){
+                	return layer.msg('请输入正确的手机号或未报案');
+                }else if(data.code<=0){
+                	/* var testDate = new Date();
+                	var testStr = testDate.format("YYYY年MM月dd日hh小时mm分ss秒");
+                	
+                	alert(testStr); */
+                	
+                	$.each(data.replist,function (index,item){
+                		var geshi=myFunction(item.report_time);
+	                	$('#wantedrepid').append(
+	                			"<tr><td>报案号</td><td>报案日期</td><td>事故地点</td<td>案件状态</td></tr>"+
+	                			"<tr><td>"+item.reportid+"</td><td>"+geshi+"</td><td>"+item.address+"</td><td>"+item.report_status+"</td></tr>"
+	                		);
+	                	});
+                }
+            },
+            error : function() {
+                alert("异常！");
+            }
+		});
+	}
+</script>
+	<!-- 时间日期格式改变js -->
+	<script type="text/javascript">
+    function myFunction(date){
+        var date= new Date(Date.parse(date));
+    	var y = date.getFullYear();
+    	var m = date.getMonth()+1;
+    	var d = date.getDate();
+    	return y+'-'+m+'-'+d;
+    };
+</script>
+
+<script>
+	function uptomoney(){
+		$.ajax({
+			type: "POST",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "/flashcontrol/uptocaiwu",//url
+            data: $('#flashinfoform').serialize(),//+"&page="+page,
+            success: function (data) {
+                console.log(data);//打印服务端返回的数据(调试用)
+                if(data.code>0){
+                	return layer.msg('提交失败，请输入正确的报案号');
+                }else if(data.code<=0){
+                	/* var testDate = new Date();
+                	var testStr = testDate.format("YYYY年MM月dd日hh小时mm分ss秒");
+                	
+                	alert(testStr); */
+                	$('flashrepid').val('');
+                	$('flashmoney').val('');
+                	alert('提交成功');
+                }
+            },
+            error : function() {
+                alert("异常！");
+            }
+		});
+	}
+</script>
 </body>
 
 </html>
