@@ -28,7 +28,7 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
 <link rel="stylesheet" href="layui/css/layui.css" media="all">
-<script src="layui/layui.js" charset="utf-8"></script>
+<script src="layui/layui.all.js" charset="utf-8"></script>
 <script type="text/javascript" src="js/jquery.min.js"></script>
 </head>
 
@@ -115,40 +115,45 @@
 							  </ul>
 							  <div class="layui-tab-content">
 							    <div class="layui-tab-item layui-show">
-							     		<form action="">
+							     		<form action="#" id="byshowrepid" method="post" onsubmit="return false" >
+								    	
 								    		<div class="form-group">
 										    <label class="label-control">请输入报案人电话：</label>
 										    	<input type="text" name="userphone"/>
+										    	<input type="button" value="查询" onclick="showrepidbyphone()"/>
 										   	</div>
-								      		<input type="button" value="查询" />
 								      	</form>
+								      	<div class="form-group">
+								      		<table  id="wantedrepid" width="100%" border="1" cellspacing="0" cellpadding="0" >
+								      		</table>
+								      	</div>
 							    </div>
 							    <div class="layui-tab-item">
+							    	<form action="#" id="uolossformid" onsubmit="return false">
 							    		<div class="form-group">
 										    <label class="label-control">请输入报案号：</label>
-										    	<input type="text" id="reportid"/>
+										    	<input type="text" id="reportid" name="reportid"/>
 										 </div>
-										<div class="layui-upload">
-											<button type="button" class="layui-btn" id="uppic1">车辆维修单据</button>
-											<div class="layui-upload-list">
-												<img class="layui-upload-img" id="demo1"
-													style="height: 100px; width: 100px;">
-												<p id="demoText"></p>
-											</div>
-											<button type="button" class="layui-btn" id="btn1">上传</button><br>
-											
-											<button type="button" class="layui-btn" id="uppic2">人伤医疗单据</button>
-											<div class="layui-upload-list">
-												<img class="layui-upload-img" id="demo2"
-													style="height: 100px; width: 100px;">
-												<p id="demoText"></p>
-											</div>
-											<button type="button" class="layui-btn" id="btn2">上传</button><br>
-										</div>
-									
-									
-									
-									
+										 <div class="form-group">
+										 	<label class="label-control">车损缴费单：</label>
+										    	<input type="file" id="carloss" name="carloss"/>
+										 </div>
+										 <div class="form-group">
+										 	<label class="label-control">人伤治疗缴费单：</label>
+										    	<input type="file" id="peoloss" name="peoloss"/>
+										 </div>
+										  <div class="form-group">
+										 	<label class="label-control">事故查勘报告：</label>
+										    	<input type="file" id="accidentreport" name="accidentreport"/>
+										 </div>
+										  <div class="form-group">
+										 	<label class="label-control">交警定责书：</label>
+										    	<input type="file" id="policeres" name="policeres"/>
+										 </div>
+										 <div class="form-group">
+										    	<input type="button" value="提交" onclick="uplossdata()"/>
+										 </div>
+									</form>
 								</div>
 							  </div>
 							</div>
@@ -177,6 +182,7 @@
     <!-- Custom Theme JavaScript -->
     <script src="js/myadmin.js"></script>
     <script>
+    //tab选项卡js
 		layui.use('element', function() {
 			var $ = layui.jquery, element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
 
@@ -220,98 +226,126 @@
 		});
 	</script>
 	
-	<script>
-		layui.use([ 'upload', 'jquery' ],
-						function() {
-							var $ = layui.jquery, upload = layui.upload;
-							//普通图片上传
-							//车头图片上传
-							var uploadInst = upload
-									.render({
-										elem : '#uppic1',
-										url : 'uppiturecontrol/upcarhead' //改成您自己的上传接口
-										,
-										auto : false,
-										data:{remake:1},
-										accept : 'file',
-										exts : 'png|jpg|bmp',
-										bindAction : '#btn1',
-										choose : function(obj) {
-											obj
-													.preview(function(index,
-															file, result) {
-														$('#demo1').attr('src',
-																result); //图片链接（base64）
-													});
-										},
-										before : function(obj) {
-											//预读本地文件示例，不支持ie8
+	
+<script type="text/javascript">
+//根据手机号获取报案信息js
+	function showrepidbyphone(){
+		$.ajax({
+			type: "POST",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "/reportcontrol/showByphonetorepid",//url
+            data: $('#byshowrepid').serialize(),//+"&page="+page,
+            success: function (data) {
+                console.log(data);//打印服务端返回的数据(调试用)
+                if(data.code>0){
+                	return layer.msg('请输入正确的手机号或未报案');
+                }else if(data.code<=0){
+                	/* var testDate = new Date();
+                	var testStr = testDate.format("YYYY年MM月dd日hh小时mm分ss秒");
+                	
+                	alert(testStr); */
+                	if($('#wantedrepid tr').length>0){
+                		$('#wantedrepid tr').remove();
+                	}
+                	$.each(data.replist,function (index,item){
+                		var geshi=myFunction(item.report_time);
+	                	$('#wantedrepid').append(
+	                			"<tr><td>报案号</td><td>报案日期</td><td>事故地点</td<td>案件状态</td></tr>"+
+	                			"<tr><td>"+item.reportid+"</td><td>"+geshi+"</td><td>"+item.address+"</td><td>"+item.report_status+"</td></tr>"
+	                		);
+	                	});
+                }
+            },
+            error : function() {
+                alert("异常！");
+            }
+		});
+	}
+</script>
+	<!-- 时间日期格式改变js -->
+	<script type="text/javascript">
+    function myFunction(date){
+        var date= new Date(Date.parse(date));
+    	var y = date.getFullYear();
+    	var m = date.getMonth()+1;
+    	var d = date.getDate();
+    	return y+'-'+m+'-'+d;
+    };
+</script>
 
-										},
-										done : function(res) {
-											//如果上传失败
-											if (res.code > 0) {
-												return layer.msg('上传失败');
-											} else {
-												return layer.msg('上传成功');
-											}
-											//上传成功
-										},
-										error : function() {
-											//演示失败状态，并实现重传
-											var demoText = $('#demoText');
-											demoText
-													.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
-											demoText.find('.demo-reload').on(
-													'click', function() {
-														uploadInst.upload();
-													});
-										}
-									});
-							//车尾图片上传
-							upload
-									.render({
-										elem : '#uppic2',
-										url : 'uppiturecontrol/upcarhead' //改成您自己的上传接口
-										,
-										data:{remake:2},
-										auto : false,
-										accept : 'file',
-										exts : 'png|jpg|bmp',
-										bindAction : '#btn2',
-										choose : function(obj) {
-											obj
-													.preview(function(index,
-															file, result) {
-														$('#demo2').attr('src',
-																result); //图片链接（base64）
-													});
-										},
-										before : function(obj) {
-											//预读本地文件示例，不支持ie8
+<script>
+	function uptomoney(){
+		$.ajax({
+			type: "POST",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "/flashcontrol/uptocaiwu",//url
+            data: $('#flashinfoform').serialize(),//+"&page="+page,
+            success: function (data) {
+                console.log(data);//打印服务端返回的数据(调试用)
+                if(data.code==100){
+                	return layer.msg('提交失败，请输入正确的报案号');
+                }else if(data.code==500){
+                	return layer.msg('已提交闪赔业务，请勿重复提交');
+                }else if(data.code<=0){
+                	/* var testDate = new Date();
+                	var testStr = testDate.format("YYYY年MM月dd日hh小时mm分ss秒");
+                	alert(testStr); */
+                	$('flashrepid').val('');
+                	$('flashmoney').val('');
+                	return layer.msg('提交成功');
+                }
+            },
+            error : function() {
+                alert("异常！");
+            }
+		});
+	}
+</script>
 
-										},
-										done : function(res) {
-											//如果上传失败
-											if (res.code > 0) {
-												return layer.msg('上传失败');
-											} else {
-												return layer.msg('上传成功');
-											}
-											//上传成功
-										},
-										error : function() {
-											//演示失败状态，并实现重传
-											var demoText = $('#demoText');
-											demoText
-													.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
-											demoText.find('.demo-reload').on(
-													'click', function() {
-														uploadInst.upload();
-													});
-										}
-									});
-							</script>
+<script type="text/javascript">
+function uplossdata(){
+	var formdata=new FormData();
+	console.log($('#carloss')[0].files[0]);
+	console.log($('#peoloss')[0].files[0]);
+	console.log($('#accidentreport')[0].files[0]);
+	console.log($('#policeres')[0].files[0]);
+	if($('#carloss')[0].files[0]==null||$('#peoloss')[0].files[0]==null||$('#accidentreport')[0].files[0]==null||$('#policeres')[0].files[0]==null){
+		return layer.msg('请选择需要上传的文件');
+	}
+	formdata.append('carloss',$('#carloss')[0].files[0]);
+	formdata.append('peoloss',$('#peoloss')[0].files[0]);
+	formdata.append('accidentreport',$('#accidentreport')[0].files[0]);
+	formdata.append('policeres',$('#policeres')[0].files[0]);
+	formdata.append('reportid',$('#reportid').val());
+	
+	$.ajax({
+		type: "POST",//方法类型
+        dataType: "json",//预期服务器返回的数据类型
+        url: "/uplosscontrol/tocenter",//url
+        data: formdata,
+        cache:false,
+        processData:false,
+        contentType:false,
+        success: function (data) {
+            console.log(data);//打印服务端返回的数据(调试用)
+            if(data.code==400){
+            	return layer.msg('请输入正确的报案号');
+            }else if(data.code==501){
+            	return layer.msg('已做其他处理，无需提交定损');
+            }else if(data.code==500){
+            	return layer.msg('提交失败');
+            }else if(data.code==200){
+            	return layer.msg('提交成功');
+            }
+        },
+        error : function() {
+            alert("异常！");
+        }
+	});
+	
+}
+
+</script>
 </body>
 
 </html>

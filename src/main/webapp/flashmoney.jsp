@@ -29,7 +29,7 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
 <link rel="stylesheet" href="layui/css/layui.css" media="all">
-<script src="layui/layui.js" charset="utf-8"></script>
+<script src="layui/layui.all.js" charset="utf-8"></script>
 <script src="date.format-master/date.format.js" charset="utf-8"></script>
 <script type="text/javascript" src="js/jquery.min.js"></script>
 </head>
@@ -213,7 +213,9 @@
 
 		});
 	</script>
+	
 	<script type="text/javascript">
+	//获取案件信息js
 	function showrepidbyphone(){
 		$.ajax({
 			type: "POST",//方法类型
@@ -265,16 +267,17 @@
             data: $('#flashinfoform').serialize(),//+"&page="+page,
             success: function (data) {
                 console.log(data);//打印服务端返回的数据(调试用)
-                if(data.code>0){
+                if(data.code==100){
                 	return layer.msg('提交失败，请输入正确的报案号');
+                }else if(data.code==500){
+                	return layer.msg('已提交闪赔业务，请勿重复提交');
                 }else if(data.code<=0){
                 	/* var testDate = new Date();
                 	var testStr = testDate.format("YYYY年MM月dd日hh小时mm分ss秒");
-                	
                 	alert(testStr); */
                 	$('flashrepid').val('');
                 	$('flashmoney').val('');
-                	alert('提交成功');
+                	return layer.msg('提交成功');
                 }
             },
             error : function() {

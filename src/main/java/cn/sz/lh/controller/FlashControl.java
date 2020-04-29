@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -39,11 +40,19 @@ public class FlashControl {
     	f.setFlash_p_m(0D);
     	f.setFlash_m(0D+f.getFlash_c_m());
     	Map<String,Object> map=new HashMap<String,Object>();
-    	if(flashfeign.addflashinfo(f).equals("default")) {
-    		flashfeign.updaterepstatus(rep);
-    		map.put("code", 1);
+    	if(flashfeign.showInforep(rep)==null) {
+    		map.put("code", 100);
     		return map;
     	}
+    	if(flashfeign.showInforep(rep).getReport_status().equals("闪赔")) {
+    		map.put("code", 500);
+    		return map;
+    	}
+    	if(flashfeign.addflashinfo(f).equals("default")) {
+    		map.put("code", 100);
+    		return map;
+    	}
+    	flashfeign.updaterepstatus(rep);
 		map.put("code", 0);
 		return map;
 	}

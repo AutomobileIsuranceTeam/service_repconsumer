@@ -12,6 +12,7 @@ import cn.sz.lh.pojo.Flash_P;
 import cn.sz.lh.pojo.Insured;
 import cn.sz.lh.pojo.Manager;
 import cn.sz.lh.pojo.Rep_Info;
+import cn.sz.lh.pojo.Up_Loss;
 
 @FeignClient(value="ReportServer")
 public interface LoginService {
@@ -45,4 +46,7 @@ public interface LoginService {
 	
 	@PostMapping("/report/updaterepstatus")
 	public String updaterepstatus(Rep_Info rep);//修改案件状态
+	
+	@PostMapping("/uplosscontrol/adduploss")
+	public String adduploss(@RequestBody Up_Loss uploss);//提交定损表
 }

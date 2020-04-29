@@ -33,6 +33,7 @@
 <![endif]-->
 <link rel="stylesheet" href="layui/css/layui.css" media="all">
 <script src="layui/layui.js" charset="utf-8"></script>
+
 <script type="text/javascript" src="js/jquery.min.js"></script>
 </head>
 
@@ -128,6 +129,7 @@
 									<li>案件审核</li>
 									<li>事故照片上传</li>
 									<li>案件信息</li>
+									<li>获取报案号</li>
 								</ul>
 								<!-- 报案信息 -->
 								<div class="layui-tab-content">
@@ -212,28 +214,43 @@
 										</form>
 										<div class="form-group">
 												<label class="label-control">报案人电话:</label> <input
-													type="text" name="userphoneshow" id="userphoneshow" />
+													type="text" readonly="readonly" name="userphoneshow" id="userphoneshow" />
 											</div>
 											<div class="form-group">
 												<label class="label-control">事故发生地:</label> <input
-													type="text" name="addressshow" id="addressshow"/>
+													type="text" readonly="readonly" name="addressshow" id="addressshow"/>
 											</div>
 											<div class="form-group">
 												<label class="label-control" >事故发生时间:</label> <input
-												type="text" name="report_timeshow" id="accidenttimeshow"  />
+												type="text" readonly="readonly" name="report_timeshow" id="accidenttimeshow"  />
 											</div>
 											<div class="form-group">
 												<label class="label-control">是否与人碰撞:</label>
-												<input type="text" id="if_collisionshow"/>
+												<input type="text" readonly="readonly" id="if_collisionshow"/>
 											</div>
 											<div class="form-group">
 												<label class="label-control">是否有人受伤：</label> <input
-													name="if_injuredshow" id="if_injuredshow"/>
+													name="if_injuredshow" readonly="readonly" id="if_injuredshow"/>
 											</div>
 											<div class="form-group" id="imagediv">
 												
 											</div>
 											
+									</div>
+									
+									<div class="layui-tab-item">
+										<form action="#" id="byshowrepid" method="post" onsubmit="return false" >
+								    	
+								    		<div class="form-group">
+										    <label class="label-control">请输入报案人电话：</label>
+										    	<input type="text" name="userphone"/>
+										    	<input type="button" value="查询" onclick="showrepidbyphone()"/>
+										   	</div>
+								      	</form>
+								      	<div class="form-group">
+								      		<table  id="wantedrepid" width="100%" border="1" cellspacing="0" cellpadding="0" >
+								      		</table>
+								      	</div>
 									</div>
 								</div>
 							</div>
@@ -447,7 +464,7 @@ layui.use('upload', function(){
                 		$('#imagediv').append(
                 				"<label class='label-control'>车辆损失图片：</label><img src='"+
                 				item.carone
-                				+"' alt='111' width='200px' height='200px' id='myimage"+index+"' class='layui-upload-img' onclick='mypreviewImg(this)'><br>"
+                				+"' alt='无上传图片' width='200px' height='200px' id='myimage"+index+"' class='layui-upload-img' onclick='mypreviewImg(this)'><br>"
                 		);
                 	});
                  }
@@ -484,6 +501,49 @@ function mypreviewImg(obj) {
     }); 
 }
 
+</script>
+<script type="text/javascript">
+	//获取案件信息js
+	function showrepidbyphone(){
+		$.ajax({
+			type: "POST",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "/reportcontrol/showByphonetorepid",//url
+            data: $('#byshowrepid').serialize(),//+"&page="+page,
+            success: function (data) {
+                console.log(data);//打印服务端返回的数据(调试用)
+                if(data.code>0){
+                	return layer.msg('请输入正确的手机号或未报案');
+                }else if(data.code<=0){
+                	/* var testDate = new Date();
+                	var testStr = testDate.format("YYYY年MM月dd日hh小时mm分ss秒");
+                	
+                	alert(testStr); */
+                	
+                	$.each(data.replist,function (index,item){
+                		var geshi=myFunction(item.report_time);
+	                	$('#wantedrepid').append(
+	                			"<tr><td>报案号</td><td>报案日期</td><td>事故地点</td<td>案件状态</td></tr>"+
+	                			"<tr><td>"+item.reportid+"</td><td>"+geshi+"</td><td>"+item.address+"</td><td>"+item.report_status+"</td></tr>"
+	                		);
+	                	});
+                }
+            },
+            error : function() {
+                alert("异常！");
+            }
+		});
+	}
+</script>
+	<!-- 时间日期格式改变js -->
+	<script type="text/javascript">
+    function myFunction(date){
+        var date= new Date(Date.parse(date));
+    	var y = date.getFullYear();
+    	var m = date.getMonth()+1;
+    	var d = date.getDate();
+    	return y+'-'+m+'-'+d;
+    };
 </script>
 
 </body>

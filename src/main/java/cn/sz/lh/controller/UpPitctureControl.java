@@ -56,6 +56,9 @@ public class UpPitctureControl {
 		File  imageFolder= new File(request.getServletContext().getRealPath(folder));
 		Map<String,Object> map=new HashMap<>();
 	        try {
+	        	if(!imageFolder.exists()) {
+	        		imageFolder.mkdirs();
+	        	}
 	        	caraccident.setReportid(rep.getReportid());//添加报案号
 	        	SimpleDateFormat sdf=new SimpleDateFormat("HHmmss");
 	    		String nowtime=sdf.format(new Date());
