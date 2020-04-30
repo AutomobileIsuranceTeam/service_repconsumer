@@ -1,8 +1,8 @@
 package cn.sz.lh.controller;
 
 import java.math.BigInteger;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +49,7 @@ public class ReportContol {
         map.put("reportid", t);
         return map;
 	}
-	
+	//根据报案号查询报案信息
 	@ResponseBody
 	@RequestMapping(value="/showrepinfo",method=RequestMethod.POST)
 	public Object showonerepinfo(Rep_Info rep) {
@@ -73,7 +73,7 @@ public class ReportContol {
 		map.put("code", 200);
 		return map;
 	}
-	
+	//根据手机号查报案信息
 	@ResponseBody
 	@RequestMapping(value="/showByphonetorepid",method=RequestMethod.POST)
 	public Object showByPhoneTorepid(Rep_Info rep) {
@@ -86,6 +86,29 @@ public class ReportContol {
 		}
 		map.put("replist", replist);
 		map.put("code", 0);
+		return map;
+	}
+	//查询所有案件信息
+	@ResponseBody
+	@RequestMapping(value="/showallreport",method=RequestMethod.GET)
+	public Object showallreport(Rep_Info rep){
+		System.out.println("reportid:"+rep.getReportid());
+		Map<String, Object> map=new HashMap<String,Object>();
+		List<Rep_Info> replist=new ArrayList<Rep_Info>();
+		if(rep.getReportid()!=null) {
+			replist.add(reportfeign.showInforep(rep));
+			map.put("code", 0);
+			map.put("msg", "");
+			map.put("count",1);
+			map.put("data", replist);
+			return map;
+		}
+		replist=reportfeign.showallreport();
+		
+		map.put("code", 0);
+		map.put("msg", "");
+		map.put("count",replist.size());
+		map.put("data", replist);
 		return map;
 	}
 	

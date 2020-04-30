@@ -12,6 +12,7 @@ import cn.sz.lh.pojo.Flash_P;
 import cn.sz.lh.pojo.Insured;
 import cn.sz.lh.pojo.Manager;
 import cn.sz.lh.pojo.Rep_Info;
+import cn.sz.lh.pojo.Time_d;
 import cn.sz.lh.pojo.Up_Loss;
 
 @FeignClient(value="ReportServer")
@@ -49,4 +50,13 @@ public interface LoginService {
 	
 	@PostMapping("/uplosscontrol/adduploss")
 	public String adduploss(@RequestBody Up_Loss uploss);//提交定损表
+	
+	@PostMapping("/dealcontrol/adddealend")
+	public String adddealend(@RequestBody Time_d dealtable);//添加处理信息
+	
+	@PostMapping("/dealcontrol/showdealend")
+	public List<Time_d> showdealend(@RequestBody Time_d dealtable);//根据报案号，展示案件处理信息
+	
+	@PostMapping("/report/showallreport")
+	public List<Rep_Info> showallreport();//查询所有案件信息
 }

@@ -27,6 +27,9 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
+	<link rel="stylesheet" href="layui/css/layui.css"  media="all">
+	
+<script type="text/javascript" src="js/jquery.min.js"></script>
 </head>
 
 <body>
@@ -103,7 +106,19 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="white-box">
-                            <h3>Blank Page</h3>
+                            
+                            <div class="demoTable">
+							  搜索ID：
+							  <div class="layui-inline">
+							    <input class="layui-input" name="id" id="demoReload" autocomplete="off">
+							  </div>
+							  <button class="layui-btn" data-type="reload">搜索</button>
+							</div>
+							 
+							<table class="layui-hide" id="LAY_table_user" lay-filter="user"></table> 
+                            
+                            
+                            
                         </div>
                     </div>
                 </div>
@@ -129,5 +144,83 @@
     <!-- Custom Theme JavaScript -->
     <script src="js/myadmin.js"></script>
 </body>
+<script src="layui/layui.js" charset="utf-8"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+layui.use('table', function(){
+  var table = layui.table;
+  
+  //方法级渲染
+  table.render({
+    elem: '#LAY_table_user'
+    ,url: '/reportcontrol/showallreport'
+    ,cols: [
+    	[
+        {checkbox: true, fixed: true}
+        ,{field:'reportid', title: '报案号', width:160, sort: true,fixed:true}
+        ,{field:'userphone', title: '手机号', width:160}
+        ,{field:'address', title: '事故地点', width:160, sort: true}
+        ,{field:'report_time', title: '报案时间', width:160,
+        	templet :function (row){
+                return myFunction(row.report_time);
+           }  
+        }
+      ]
+    ]
+    ,id: 'testReload'
+    ,page: true
+    ,limit: 5//限制每一页的行数
+    ,limits: [5,10,15]//表示每一页可显示的行数
+    ,height: 310
+    ,parseData: function(res){ //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+        var result;
+        console.log(this);
+        console.log(JSON.stringify(res));
+        if(this.page.curr){
+            result = res.data.slice(this.limit*(this.page.curr-1),this.limit*this.page.curr);
+        }
+        else{
+            result=res.data.slice(0,this.limit);
+        }
+        return {
+            "code": res.code, //解析接口状态
+            "msg": res.msg, //解析提示文本
+            "count": res.count, //解析数据长度
+            "data": result //解析数据列表
+        };
+    }
+  });
+  var $ = layui.$, active = {
+		    reload: function(){
+		      var demoReload = $('#demoReload');
+		      
+		      //执行重载
+		      table.reload('testReload', {
+		        page: {
+		          curr: 1 //重新从第 1 页开始
+		        }
+		        ,where: {
+		          reportid:demoReload.val()
+		        }
+		      }, 'data');
+		    }
+		  };
+		  
+		  $('.demoTable .layui-btn').on('click', function(){
+		    var type = $(this).data('type');
+		    active[type] ? active[type].call(this) : '';
+		  });
+});
+</script>
+
+<script type="text/javascript">
+    function myFunction(date){
+        var date= new Date(Date.parse(date));
+    	var y = date.getFullYear();
+    	var m = date.getMonth()+1;
+    	var d = date.getDate();
+    	return y+'-'+m+'-'+d;
+    };
+</script>
 
 </html>
