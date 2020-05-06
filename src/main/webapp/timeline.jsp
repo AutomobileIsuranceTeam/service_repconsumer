@@ -43,7 +43,7 @@ $(function(){
 	        });
 	    },
 	    error:function(jqXHR){
-	        //请求失败函数内容
+	        //请求失败函数内容dd
 	    }
 	});
 });  
