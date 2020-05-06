@@ -1,6 +1,8 @@
 package cn.sz.lh.controller;
 
-import java.util.List;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,8 +22,13 @@ public class DealtimeControl {
 	
 	@ResponseBody
 	@RequestMapping(value="/showalldealinfo",method=RequestMethod.POST)
-	public List<Time_d> showalldealbyone(Time_d dealtable) {
-		return dealfeign.showdealend(dealtable);
+	public Object showalldealbyone(BigInteger reportid) {
+		System.out.println(111l);
+		Time_d dealtable=new Time_d();
+		dealtable.setReportid(reportid);
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("deallist",dealfeign.showdealend(dealtable));
+		return map;
 	}
 	
 	

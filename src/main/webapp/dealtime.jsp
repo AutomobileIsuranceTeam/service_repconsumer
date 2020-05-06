@@ -220,39 +220,71 @@ layui.use('table', function(){
     	return y+'-'+m+'-'+d;
     };
 </script>
+
+<script>
+function dealinfo(rowdata){
+	$.ajax({
+	    //请求方式
+	    type:'POST',
+	    //发送请求的地址
+	    url:'/dealcontrol/showdealend',
+	    //服务器返回的数据类型
+	    dataType:'json',
+	    //发送到服务器的数据，对象必须为key/value的格式，jquery会自动转换为字符串格式
+	    data:{reportid:rowdata.reportid},
+	    success:function(data){
+	        //请求成功函数内容
+	        console.log(data);
+	    },
+	    error:function(jqXHR){
+	        //请求失败函数内容
+	    }
+	});
+}
+</script>
 <script>
 layui.use('table',function(){
 	var table=layui.table;
 	table.on('tool(user)',function(obj){
 		var rowdata=obj.data;
-	
-		
-		$.ajax({
-		    //请求方式
-		    type:'POST',
-		    //发送请求的地址
-		    url:'dealcontrol/showdealend',
-		    //服务器返回的数据类型
-		    dataType:'json',
-		    //发送到服务器的数据，对象必须为key/value的格式，jquery会自动转换为字符串格式
-		    data:{reportid:rowdata.reportid},
-		    success:function(data){
-		        //请求成功函数内容
-		        console.log(data);
-		    },
-		    error:function(jqXHR){
-		        //请求失败函数内容
-		    }
-		});
+		var tabledata=dealinfo(rowdata);
+		console.log(tabledata);
 		
 		//弹出层ddd
-		layer.open({
-			  title: '在线调试'
-			  ,content: '可以填写任意的layer代码'
-			}); 
+		if(obj.event=='showallstatus'){
+			layer.open({
+
+				   type: 2,
+
+				   title: false,
+
+				   shade: [0.5],
+
+				   title: '处理进度',
+
+				   shadeClose: true,
+
+				   shade: 0.5,
+
+				   skin:'demo-class',
+
+				   maxmin: true, //开启最大化最小化按钮
+
+				   area: ['1000px', '660px'],
+
+				   shift: 2,
+
+				   content: 'timeline.jsp?reportid='+rowdata.reportid, //iframe的url
+
+				  });
+		}
 	})
 });
 
 </script>
+
+
+
+
 
 </html>
