@@ -104,7 +104,6 @@ public class ReportContol {
 			return map;
 		}
 		replist=reportfeign.showallreport();
-		
 		map.put("code", 0);
 		map.put("msg", "");
 		map.put("count",replist.size());

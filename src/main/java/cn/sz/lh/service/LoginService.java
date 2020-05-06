@@ -59,4 +59,5 @@ public interface LoginService {
 	
 	@PostMapping("/report/showallreport")
 	public List<Rep_Info> showallreport();//查询所有案件信息
+
 }

@@ -116,9 +116,6 @@
 							</div>
 							 
 							<table class="layui-hide" id="LAY_table_user" lay-filter="user"></table> 
-                            
-                            
-                            
                         </div>
                     </div>
                 </div>
@@ -165,6 +162,7 @@ layui.use('table', function(){
                 return myFunction(row.report_time);
            }  
         }
+        ,{field:'report_status',title:'案件状态',width:160,event:'showallstatus',style:'cursor:pointer;'}
       ]
     ]
     ,id: 'testReload'
@@ -221,6 +219,40 @@ layui.use('table', function(){
     	var d = date.getDate();
     	return y+'-'+m+'-'+d;
     };
+</script>
+<script>
+layui.use('table',function(){
+	var table=layui.table;
+	table.on('tool(user)',function(obj){
+		var rowdata=obj.data;
+	
+		
+		$.ajax({
+		    //请求方式
+		    type:'POST',
+		    //发送请求的地址
+		    url:'dealcontrol/showdealend',
+		    //服务器返回的数据类型
+		    dataType:'json',
+		    //发送到服务器的数据，对象必须为key/value的格式，jquery会自动转换为字符串格式
+		    data:{reportid:rowdata.reportid},
+		    success:function(data){
+		        //请求成功函数内容
+		        console.log(data);
+		    },
+		    error:function(jqXHR){
+		        //请求失败函数内容
+		    }
+		});
+		
+		//弹出层
+		layer.open({
+			  title: '在线调试'
+			  ,content: '可以填写任意的layer代码'
+			}); 
+	})
+});
+
 </script>
 
 </html>
